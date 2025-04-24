@@ -5,10 +5,11 @@ import ProductGrid from './components/ProductGrid';
 import Orders from './pages/Orders';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { CurrencyProvider } from "./context/CurrencyContext";
+import { CurrencyProvider } from './context/CurrencyContext';
 import BasketModal from './components/BasketModal';
 import LoginModal from './components/LoginModal';
 import ProfileModalWrapper from './components/ProfileModalWrapper';
+import Footer from './components/Footer';
 
 function Layout() {
   const { isLoginModalOpen, setIsLoginModalOpen } = useAuth();
@@ -16,30 +17,20 @@ function Layout() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar onBasketClick={() => setIsBasketOpen(true)} />
-      
-      {/* Main content area */}
-      <main className="pt-16">
+
+      <main className="flex-grow pt-16">
         <Routes>
           <Route path="/" element={<ProductGrid />} />
           <Route path="/orders" element={<Orders />} />
         </Routes>
       </main>
 
-      {/* Profile modal (rendered as overlay when route matches) */}
       {location.pathname === '/profile' && <ProfileModalWrapper />}
-
-      {/* Other modals */}
-      <BasketModal 
-        isOpen={isBasketOpen} 
-        onClose={() => setIsBasketOpen(false)}
-      />
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
+      <BasketModal isOpen={isBasketOpen} onClose={() => setIsBasketOpen(false)} />
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <Footer />
     </div>
   );
 }
@@ -48,7 +39,6 @@ function AuthenticatedApp() {
   return (
     <Routes>
       <Route path="/*" element={<Layout />} />
-      <Route path="/profile" element={<Layout />} />
     </Routes>
   );
 }
