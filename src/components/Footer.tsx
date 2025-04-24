@@ -11,14 +11,6 @@ const Footer: React.FC = () => {
         <a href="/contact" className="hover:underline">Contact</a>
         <a href="/privacy" className="hover:underline">Privacy</a>
       </div>
-      <div className="flex justify-center space-x-4 mt-2">
-        <a href="https://github.com/" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/github.svg" alt="GitHub" className="h-5 w-5" />
-        </a>
-        <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer">
-          <img src="/icons/linkedin.svg" alt="LinkedIn" className="h-5 w-5" />
-        </a>
-      </div>
     </footer>
   );
 };
