@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Order } from '../types';
 import axios from 'axios';
+import { products } from '../data/products';
 
 interface ApiOrder {
   id: number;
@@ -11,6 +12,7 @@ interface ApiOrder {
   price: number;
   status: string;
   created_at: string;
+  currency: string; // Direct symbol from backend (A$, ₹, $, etc)
 }
 
 export default function Orders() {
@@ -18,27 +20,33 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const token = localStorage.getItem('token');
 
+  const getProductDetails = (productId: number) => {
+    const product = products.find(p => p.id === productId);
+    return {
+      name: product?.name || `Product ${productId}`,
+      image: product?.image || '/placeholder-product.jpg'
+    };
+  };
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get<ApiOrder[]>(
           'http://4.217.178.150:8000/api/orders',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         const groupedOrders = response.data.reduce((acc: Order[], apiOrder) => {
+          const productDetails = getProductDetails(apiOrder.product_id);
           const existingOrder = acc.find(o => o.id === apiOrder.id);
+
           if (existingOrder) {
             existingOrder.items.push({
               id: apiOrder.product_id,
-              name: `Product ${apiOrder.product_id}`,
+              name: productDetails.name,
               price: apiOrder.price,
               quantity: apiOrder.quantity,
-              image: ""
+              image: productDetails.image
             });
             existingOrder.total += apiOrder.price * apiOrder.quantity;
           } else {
@@ -47,12 +55,13 @@ export default function Orders() {
               date: apiOrder.created_at,
               status: apiOrder.status,
               total: apiOrder.price * apiOrder.quantity,
+              currency: apiOrder.currency, // Store currency directly
               items: [{
                 id: apiOrder.product_id,
-                name: `Product ${apiOrder.product_id}`,
+                name: productDetails.name,
                 price: apiOrder.price,
                 quantity: apiOrder.quantity,
-                image: ""
+                image: productDetails.image
               }]
             });
           }
@@ -66,15 +75,13 @@ export default function Orders() {
       }
     };
 
-    if (user && token) {
-      fetchOrders();
-    }
+    user && token && fetchOrders();
   }, [user, token]);
 
   if (!user) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <p className="text-center text-gray-600">Please login to view your orders</p>
+        <p className="text-center text-gray-600">Please login to view orders</p>
       </div>
     );
   }
@@ -89,7 +96,12 @@ export default function Orders() {
               <div>
                 <p className="text-sm text-gray-600">Order #{order.id}</p>
                 <p className="text-sm text-gray-600">
-                  {new Date(order.date).toLocaleDateString()}
+                  {new Date(order.date).toLocaleDateString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
                 </p>
               </div>
               <div>
@@ -105,11 +117,14 @@ export default function Orders() {
                     src={item.image}
                     alt={item.name}
                     className="w-20 h-20 object-cover rounded"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/placeholder-product.jpg';
+                    }}
                   />
                   <div className="ml-4 flex-1">
                     <h3 className="font-medium">{item.name}</h3>
                     <p className="text-gray-600">
-                      Quantity: {item.quantity} × ${item.price.toFixed(2)}
+                      Quantity: {item.quantity} × {order.currency}{item.price.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -117,7 +132,7 @@ export default function Orders() {
             </div>
             <div className="mt-4 pt-4 border-t">
               <p className="text-right font-bold">
-                Total: ${order.total.toFixed(2)}
+                Total: {order.currency}{order.total.toFixed(2)}
               </p>
             </div>
           </div>
