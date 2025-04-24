@@ -44,5 +44,5 @@ jobs:
     
     - name: ssh to vm
       run:
-        sshpass -p "${{secrets.PASSWORD}}" scp -o StrictHostKeyChecking=no -r $GITHUB_WORKSPACE adminuser@${{secrets.HOST}}:/var/www/html
+        sshpass -p "${{secrets.PASSWORD}}" scp -o StrictHostKeyChecking=no -r $GITHUB_WORKSPACE/stylestore-frontend/* adminuser@${{secrets.HOST}}:/var/www/html
     
