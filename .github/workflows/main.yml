@@ -10,6 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 
+    - name: check out 
+      uses: actions/checkout@v3
+    
+    - name: set up node js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: install dependencies
+      run: |
+        npm install
+        npm run build
+    
+    - name: upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: dist
+    
     
   
