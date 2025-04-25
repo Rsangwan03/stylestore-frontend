@@ -12,7 +12,7 @@ interface ApiOrder {
   price: number;
   status: string;
   created_at: string;
-  currency: string; // Direct symbol from backend (A$, ₹, $, etc)
+  currency: string;
 }
 
 export default function Orders() {
