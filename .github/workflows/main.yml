@@ -43,6 +43,10 @@ jobs:
         name: build-artifacts
     
     - name: ssh to vm
-      run:
-        sshpass -p "${{secrets.PASSWORD}}" scp -o StrictHostKeyChecking=no -r $GITHUB_WORKSPACE/* adminuser@${{secrets.HOST}}:/var/www/html
+      run: |
+       sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no adminuser@${{ secrets.HOST }} << 'EOF'
+       sudo apt update
+       sudo apt install nginx -y
+       EOF
+       sshpass -p "${{secrets.PASSWORD}}" scp -o StrictHostKeyChecking=no -r $GITHUB_WORKSPACE/* adminuser@${{secrets.HOST}}:/var/www/html
     
