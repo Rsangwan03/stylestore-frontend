@@ -87,7 +87,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ onOrderSuccess, onClose }) 
             currency: selectedSymbol // 💰 Pass the currency symbol
           };
 
-          await axios.post('http://4.217.178.150:8000/api/orders', orderData, {
+          await axios.post('http://10.0.3.4:8000/api/orders', orderData, {
             headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json'
