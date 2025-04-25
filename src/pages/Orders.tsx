@@ -32,7 +32,7 @@ export default function Orders() {
     const fetchOrders = async () => {
       try {
         const response = await axios.get<ApiOrder[]>(
-          'http://10.0.3.4:8000/api/orders',
+          '/api/orders',
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!token) return;
 
     try {
-      const response = await fetch('http://172.178.45.129:8000/api/auth/profile', {
+      const response = await fetch('/api/auth/profile', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -124,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://172.178.45.129:8000/api/auth/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -145,7 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (email: string, password: string, firstName: string, lastName: string) => {
     try {
-      const response = await fetch('http://172.178.45.129:8000/api/auth/register', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -178,7 +178,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!token) throw new Error('User not authenticated');
 
     try {
-      const response = await fetch('http://172.178.45.129:8000/api/auth/profile', {
+      const response = await fetch('/api/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
