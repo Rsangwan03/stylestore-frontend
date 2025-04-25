@@ -47,6 +47,8 @@ jobs:
        sshpass -p "${{ secrets.PASSWORD }}" ssh -o StrictHostKeyChecking=no adminuser@${{ secrets.HOST }} << 'EOF'
        sudo apt update
        sudo apt install nginx -y
+       sudo chown -R adminuser:adminuser /var/www/html
+       sudo chmod -R 755 /var/www/html
        EOF
        sshpass -p "${{secrets.PASSWORD}}" scp -o StrictHostKeyChecking=no -r $GITHUB_WORKSPACE/* adminuser@${{secrets.HOST}}:/var/www/html
     
